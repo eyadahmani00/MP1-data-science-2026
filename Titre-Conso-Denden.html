@@ -2,65 +2,22 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DenDen</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<style>
-  body { font-family: Arial, sans-serif; margin: 30px; }
-  table { border-collapse: collapse; min-width: 480px; margin-top: 15px; }
-  th, td { border: 1px solid #999; padding: 6px 10px; }
-  th { background: #1f6f43; color: white; }
-  td.num { text-align: right; }
-  tr.total td { font-weight: bold; background: #ffe699; }
-  #msg { color: #b00; }
-</style>
 </head>
 <body>
 
 <h2>La consommation à DenDen</h2>
-<p>Choisir un autre fichier Excel : <input type="file" id="fichier" accept=".xlsx,.xls"></p>
-<p id="msg"></p>
-<div id="resultat"></div>
+<div id="tableau"></div>
 
 <script>
-const FICHIER = "Consommation-STEG-DenDen.xlsx";
-
-function afficher(buffer) {
-  const wb = XLSX.read(buffer, { type: "array" });
-  const feuille = wb.Sheets[wb.SheetNames[0]];
-  const lignes = XLSX.utils.sheet_to_json(feuille, { header: 1, defval: "" });
-
-  let html = "<table>";
-  lignes.forEach((ligne, i) => {
-    if (ligne.every(c => c === "")) return;           // ignore les lignes vides
-    const nom = String(ligne[0]);
-    const classe = /total|compteur/i.test(nom) ? ' class="total"' : "";
-    html += "<tr" + classe + ">";
-    ligne.forEach(c => {
-      if (i === 0) html += "<th>" + c + "</th>";
-      else html += "<td" + (typeof c === "number" ? ' class="num"' : "") + ">" + c + "</td>";
-    });
-    html += "</tr>";
+fetch("Consommation-STEG-DenDen.xlsx")
+  .then(r => r.arrayBuffer())
+  .then(data => {
+    const wb = XLSX.read(data);
+    const feuille = wb.Sheets[wb.SheetNames[0]];
+    document.getElementById("tableau").innerHTML = XLSX.utils.sheet_to_html(feuille);
   });
-  html += "</table>";
-  document.getElementById("resultat").innerHTML = html;
-  document.getElementById("msg").textContent = "";
-}
-
-// Chargement automatique du fichier du dépôt
-fetch(FICHIER)
-  .then(r => { if (!r.ok) throw new Error(); return r.arrayBuffer(); })
-  .then(afficher)
-  .catch(() => {
-    document.getElementById("msg").textContent =
-      "Chargement automatique impossible. Utilisez le bouton ci-dessus ou ouvrez la page via GitHub Pages.";
-  });
-
-// Chargement manuel (fonctionne aussi en double-cliquant sur le fichier)
-document.getElementById("fichier").addEventListener("change", e => {
-  const f = e.target.files[0];
-  if (f) f.arrayBuffer().then(afficher);
-});
 </script>
 
 </body>
