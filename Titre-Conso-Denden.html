@@ -1,19 +1,39 @@
 <!DOCTYPE html>
-
 <html lang="fr">
-
 <head>
-
 <meta charset="UTF-8">
-
-<title> DenDen </title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DenDen</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 30px; }
+  table { border-collapse: collapse; width: 480px; }
+  th, td { border: 1px solid #999; padding: 6px 10px; }
+  th { background: #1f6f43; color: white; }
+  td.num { text-align: right; }
+  tr.total td { font-weight: bold; background: #ffe699; }
+</style>
 </head>
-
 <body>
 
-<p>La consommation à DenDen</p>
+<h2>La consommation à DenDen</h2>
+
+<table>
+  <tr><th>Maisons / Société</th><th>Consommation Juillet</th><th>Consommation Août</th></tr>
+  <tr><td>Maison 1</td><td class="num">150</td><td class="num">150</td></tr>
+  <tr><td>Maison 2</td><td class="num">100</td><td class="num">100</td></tr>
+  <tr><td>Maison 3</td><td class="num">100</td><td class="num">100</td></tr>
+  <tr><td>Maison 4</td><td class="num">100</td><td class="num">100</td></tr>
+  <tr><td>Maison 5</td><td class="num">150</td><td class="num">150</td></tr>
+  <tr><td>Maison 6</td><td class="num">100</td><td class="num">100</td></tr>
+  <tr><td>Maison 7</td><td class="num">100</td><td class="num">100</td></tr>
+  <tr><td>Maison 8</td><td class="num">100</td><td class="num">100</td></tr>
+  <tr><td>Maison 9</td><td class="num">100</td><td class="num">0</td></tr>
+  <tr><td>Maison 10</td><td class="num">150</td><td class="num">150</td></tr>
+  <tr><td>Office National de l'artisanat</td><td class="num">950</td><td class="num">950</td></tr>
+  <tr class="total"><td>Total calculé</td><td class="num">2100</td><td class="num">2000</td></tr>
+  <tr class="total"><td>Compteur Denden</td><td class="num">2000</td><td class="num">2000</td></tr>
+  <tr class="total"><td>Écart (compteur − total)</td><td class="num">-100</td><td class="num">0</td></tr>
+</table>
 
 </body>
-
 </html>
