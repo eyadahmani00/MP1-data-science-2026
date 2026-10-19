@@ -4,36 +4,64 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DenDen</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
   body { font-family: Arial, sans-serif; margin: 30px; }
-  table { border-collapse: collapse; width: 480px; }
+  table { border-collapse: collapse; min-width: 480px; margin-top: 15px; }
   th, td { border: 1px solid #999; padding: 6px 10px; }
   th { background: #1f6f43; color: white; }
   td.num { text-align: right; }
   tr.total td { font-weight: bold; background: #ffe699; }
+  #msg { color: #b00; }
 </style>
 </head>
 <body>
 
 <h2>La consommation à DenDen</h2>
+<p>Choisir un autre fichier Excel : <input type="file" id="fichier" accept=".xlsx,.xls"></p>
+<p id="msg"></p>
+<div id="resultat"></div>
 
-<table>
-  <tr><th>Maisons / Société</th><th>Consommation Juillet</th><th>Consommation Août</th></tr>
-  <tr><td>Maison 1</td><td class="num">150</td><td class="num">150</td></tr>
-  <tr><td>Maison 2</td><td class="num">100</td><td class="num">100</td></tr>
-  <tr><td>Maison 3</td><td class="num">100</td><td class="num">100</td></tr>
-  <tr><td>Maison 4</td><td class="num">100</td><td class="num">100</td></tr>
-  <tr><td>Maison 5</td><td class="num">150</td><td class="num">150</td></tr>
-  <tr><td>Maison 6</td><td class="num">100</td><td class="num">100</td></tr>
-  <tr><td>Maison 7</td><td class="num">100</td><td class="num">100</td></tr>
-  <tr><td>Maison 8</td><td class="num">100</td><td class="num">100</td></tr>
-  <tr><td>Maison 9</td><td class="num">100</td><td class="num">0</td></tr>
-  <tr><td>Maison 10</td><td class="num">150</td><td class="num">150</td></tr>
-  <tr><td>Office National de l'artisanat</td><td class="num">950</td><td class="num">950</td></tr>
-  <tr class="total"><td>Total calculé</td><td class="num">2100</td><td class="num">2000</td></tr>
-  <tr class="total"><td>Compteur Denden</td><td class="num">2000</td><td class="num">2000</td></tr>
-  <tr class="total"><td>Écart (compteur − total)</td><td class="num">-100</td><td class="num">0</td></tr>
-</table>
+<script>
+const FICHIER = "Consommation-STEG-DenDen.xlsx";
+
+function afficher(buffer) {
+  const wb = XLSX.read(buffer, { type: "array" });
+  const feuille = wb.Sheets[wb.SheetNames[0]];
+  const lignes = XLSX.utils.sheet_to_json(feuille, { header: 1, defval: "" });
+
+  let html = "<table>";
+  lignes.forEach((ligne, i) => {
+    if (ligne.every(c => c === "")) return;           // ignore les lignes vides
+    const nom = String(ligne[0]);
+    const classe = /total|compteur/i.test(nom) ? ' class="total"' : "";
+    html += "<tr" + classe + ">";
+    ligne.forEach(c => {
+      if (i === 0) html += "<th>" + c + "</th>";
+      else html += "<td" + (typeof c === "number" ? ' class="num"' : "") + ">" + c + "</td>";
+    });
+    html += "</tr>";
+  });
+  html += "</table>";
+  document.getElementById("resultat").innerHTML = html;
+  document.getElementById("msg").textContent = "";
+}
+
+// Chargement automatique du fichier du dépôt
+fetch(FICHIER)
+  .then(r => { if (!r.ok) throw new Error(); return r.arrayBuffer(); })
+  .then(afficher)
+  .catch(() => {
+    document.getElementById("msg").textContent =
+      "Chargement automatique impossible. Utilisez le bouton ci-dessus ou ouvrez la page via GitHub Pages.";
+  });
+
+// Chargement manuel (fonctionne aussi en double-cliquant sur le fichier)
+document.getElementById("fichier").addEventListener("change", e => {
+  const f = e.target.files[0];
+  if (f) f.arrayBuffer().then(afficher);
+});
+</script>
 
 </body>
 </html>
