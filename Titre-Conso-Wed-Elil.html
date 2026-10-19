@@ -1,19 +1,24 @@
 <!DOCTYPE html>
-
 <html lang="fr">
-
 <head>
-
 <meta charset="UTF-8">
-
-<title> Oued Elil </title>
-
+<title>Oued Elil</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
-
 <body>
 
-<p>La consommation à Oued Elil</p>
+<h2>La consommation à Oued Elil</h2>
+<div id="tableau"></div>
+
+<script>
+fetch("Consommation-STEG-DenDen.xlsx")
+  .then(r => r.arrayBuffer())
+  .then(data => {
+    const wb = XLSX.read(data);
+    const feuille = wb.Sheets[wb.SheetNames[0]];
+    document.getElementById("tableau").innerHTML = XLSX.utils.sheet_to_html(feuille);
+  });
+</script>
 
 </body>
-
 </html>
