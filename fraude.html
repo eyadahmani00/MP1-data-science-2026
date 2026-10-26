@@ -73,7 +73,7 @@ function calculateFraudRisk() {
 
     // 1. Analyse du type et des montants critiques (Patterns PaySim classiques)
     if ((type === 'TRANSFER' || type === 'CASH_OUT') && amount > 10000) {
-        score += 30;
+        score += 100;
         indicators.push("Type de transaction hautement sensible avec un montant élevé (>10k€).");
     }
 
